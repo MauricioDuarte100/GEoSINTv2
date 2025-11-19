@@ -228,9 +228,10 @@ function App() {
       }
     }
 
+    // Use relative paths for Vercel deployment
     const endpoint = analysisMode === 'lens'
-      ? 'http://localhost:5001/api/analyze-lens'
-      : 'http://localhost:5001/api/analyze';
+      ? '/api/analyze-lens'
+      : '/api/analyze';
 
     try {
       const response = await fetch(endpoint, {
@@ -332,7 +333,7 @@ function App() {
           <div className="header-brand">
             <div className="logo">
               <TextAnimator className="logo-text" trigger="hover" colors={['#667eea', '#4facfe']}>GeoSINT</TextAnimator>
-              <span className="logo-badge">v2.2</span>
+              <span className="logo-badge">v2.7</span>
             </div>
           </div>
           <div className="header-actions">
