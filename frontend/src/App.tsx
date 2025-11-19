@@ -70,8 +70,9 @@ function App() {
 
   // Update view coordinates
   useEffect(() => {
-    if (analysis?.detailed_analysis?.primary_coordinates) {
-      setViewCoordinates(analysis.detailed_analysis.primary_coordinates);
+    const coords = analysis?.detailed_analysis?.primary_coordinates;
+    if (coords && coords.lat !== null && coords.lng !== null) {
+      setViewCoordinates({ lat: coords.lat, lng: coords.lng });
     }
   }, [analysis]);
 
@@ -299,6 +300,7 @@ function App() {
   };
   const copyCoordinates = (lat: number, lng: number) => {
     navigator.clipboard.writeText(`${lat.toFixed(6)}, ${lng.toFixed(6)}`);
+    // Optional: Show a toast or feedback
   };
 
   return (
@@ -496,6 +498,12 @@ function App() {
                     <div className="map-actions">
                       <button onClick={() => openInGoogleMaps(viewCoordinates.lat, viewCoordinates.lng)} className="map-btn google-maps-btn">Google Maps</button>
                       <button onClick={() => openInGoogleStreetView(viewCoordinates.lat, viewCoordinates.lng)} className="map-btn street-view-btn">Street View</button>
+                      <button onClick={() => copyCoordinates(viewCoordinates.lat, viewCoordinates.lng)} className="map-btn copy-btn" title="Copy Coordinates">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                      </button>
                     </div>
                   </div>
                   <div className="map-container">
