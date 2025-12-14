@@ -16,8 +16,9 @@ interface AnalysisResult {
     alternative_locations: Array<{
       lat: number | null;
       lng: number | null;
+      location_name?: string;
       description?: string;
-      probability?: string;
+      probability?: string | number;
     }>;
     evidence: {
       signage: string;
@@ -25,11 +26,19 @@ interface AnalysisResult {
       architecture: string;
       environment: string;
       cultural_elements: string;
+      vehicles?: string;
+    };
+    methodology?: {
+      key_indicators: string[];
+      eliminated_regions: string[];
+      limiting_factors: string[];
     };
     final_assessment: {
       most_probable_location: string;
       certainty_percentage: number;
       primary_landmark: string;
+      verification_suggestions?: string[];
+      osint_notes?: string;
     };
   };
   multi_image_analysis?: {
@@ -38,6 +47,7 @@ interface AnalysisResult {
   };
   timestamp?: number;
 }
+
 
 function App() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
@@ -129,25 +139,21 @@ function App() {
   // Global Event Listeners
   useEffect(() => {
     const handleGlobalPaste = (event: ClipboardEvent) => {
-      if (document.activeElement?.closest('.upload-section') ||
-        document.activeElement?.closest('.upload-area')) {
+      // Allow paste globally on the page (not just when focused on upload area)
+      // Only skip if user is typing in an input/textarea
+      const activeElement = document.activeElement;
+      const isTyping = activeElement instanceof HTMLInputElement ||
+        activeElement instanceof HTMLTextAreaElement;
+
+      if (!isTyping) {
         handlePaste(event);
       }
     };
 
-    const handleGlobalKeyDown = (event: KeyboardEvent) => {
-      if (event.ctrlKey && event.key === 'v') {
-        setShowPasteHint(true);
-        setTimeout(() => setShowPasteHint(false), 1500);
-      }
-    };
-
     document.addEventListener('paste', handleGlobalPaste);
-    document.addEventListener('keydown', handleGlobalKeyDown);
 
     return () => {
       document.removeEventListener('paste', handleGlobalPaste);
-      document.removeEventListener('keydown', handleGlobalKeyDown);
     };
   }, [selectedFiles]);
 
@@ -531,6 +537,9 @@ function App() {
                         <div className="alt-info">
                           <strong>Primary Match</strong>
                           <span className="alt-coords">{analysis.detailed_analysis.primary_coordinates.lat?.toFixed(4)}, {analysis.detailed_analysis.primary_coordinates.lng?.toFixed(4)}</span>
+                          {analysis.detailed_analysis.final_assessment?.certainty_percentage && (
+                            <span className="alt-probability">{analysis.detailed_analysis.final_assessment.certainty_percentage}%</span>
+                          )}
                         </div>
                       </div>
                     )}
@@ -542,10 +551,11 @@ function App() {
                           onClick={() => setViewCoordinates({ lat: alt.lat!, lng: alt.lng! })}
                         >
                           <div className="alt-info">
-                            <strong>Alternative {idx + 1}</strong>
+                            <strong>{alt.location_name || `Alternative ${idx + 1}`}</strong>
                             <span className="alt-coords">{alt.lat.toFixed(4)}, {alt.lng.toFixed(4)}</span>
-                            {alt.description && <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{alt.description}</span>}
+                            {alt.probability && <span className="alt-probability">{alt.probability}%</span>}
                           </div>
+                          {alt.description && <span className="alt-description">{alt.description}</span>}
                         </div>
                       )
                     ))}
@@ -553,11 +563,148 @@ function App() {
                 </div>
               )}
 
+              {/* Evidence Breakdown */}
+              {analysis.detailed_analysis?.evidence && (
+                <div className="evidence-section">
+                  <h4>Evidence Analysis</h4>
+                  <div className="evidence-grid">
+                    {analysis.detailed_analysis.evidence.signage && analysis.detailed_analysis.evidence.signage !== "None visible" && (
+                      <div className="evidence-item">
+                        <div className="evidence-icon">📝</div>
+                        <div className="evidence-content">
+                          <span className="evidence-label">Signage & Text</span>
+                          <span className="evidence-value">{analysis.detailed_analysis.evidence.signage}</span>
+                        </div>
+                      </div>
+                    )}
+                    {analysis.detailed_analysis.evidence.infrastructure && (
+                      <div className="evidence-item">
+                        <div className="evidence-icon">🛣️</div>
+                        <div className="evidence-content">
+                          <span className="evidence-label">Infrastructure</span>
+                          <span className="evidence-value">{analysis.detailed_analysis.evidence.infrastructure}</span>
+                        </div>
+                      </div>
+                    )}
+                    {analysis.detailed_analysis.evidence.architecture && (
+                      <div className="evidence-item">
+                        <div className="evidence-icon">🏛️</div>
+                        <div className="evidence-content">
+                          <span className="evidence-label">Architecture</span>
+                          <span className="evidence-value">{analysis.detailed_analysis.evidence.architecture}</span>
+                        </div>
+                      </div>
+                    )}
+                    {analysis.detailed_analysis.evidence.environment && (
+                      <div className="evidence-item">
+                        <div className="evidence-icon">🌿</div>
+                        <div className="evidence-content">
+                          <span className="evidence-label">Environment</span>
+                          <span className="evidence-value">{analysis.detailed_analysis.evidence.environment}</span>
+                        </div>
+                      </div>
+                    )}
+                    {analysis.detailed_analysis.evidence.cultural_elements && (
+                      <div className="evidence-item">
+                        <div className="evidence-icon">🎭</div>
+                        <div className="evidence-content">
+                          <span className="evidence-label">Cultural Elements</span>
+                          <span className="evidence-value">{analysis.detailed_analysis.evidence.cultural_elements}</span>
+                        </div>
+                      </div>
+                    )}
+                    {analysis.detailed_analysis.evidence.vehicles && (
+                      <div className="evidence-item">
+                        <div className="evidence-icon">🚗</div>
+                        <div className="evidence-content">
+                          <span className="evidence-label">Vehicles</span>
+                          <span className="evidence-value">{analysis.detailed_analysis.evidence.vehicles}</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Methodology Section */}
+              {analysis.detailed_analysis?.methodology && (
+                <div className="methodology-section">
+                  <h4>Analysis Methodology</h4>
+                  <div className="methodology-grid">
+                    {analysis.detailed_analysis.methodology.key_indicators && analysis.detailed_analysis.methodology.key_indicators.length > 0 && (
+                      <div className="methodology-item key-indicators">
+                        <span className="methodology-label">Key Indicators</span>
+                        <ul className="methodology-list">
+                          {analysis.detailed_analysis.methodology.key_indicators.map((indicator, idx) => (
+                            <li key={idx}>{indicator}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    {analysis.detailed_analysis.methodology.eliminated_regions && analysis.detailed_analysis.methodology.eliminated_regions.length > 0 && (
+                      <div className="methodology-item eliminated">
+                        <span className="methodology-label">Eliminated Regions</span>
+                        <ul className="methodology-list">
+                          {analysis.detailed_analysis.methodology.eliminated_regions.map((region, idx) => (
+                            <li key={idx}>{region}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    {analysis.detailed_analysis.methodology.limiting_factors && analysis.detailed_analysis.methodology.limiting_factors.length > 0 && (
+                      <div className="methodology-item limiting">
+                        <span className="methodology-label">Limiting Factors</span>
+                        <ul className="methodology-list">
+                          {analysis.detailed_analysis.methodology.limiting_factors.map((factor, idx) => (
+                            <li key={idx}>{factor}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {/* Reasoning */}
               <div className="reasoning-section">
-                <h4>Reasoning</h4>
+                <h4>Analysis Summary</h4>
                 <div className="reasoning-content">{analysis.reasoning}</div>
+
+                {/* Final Assessment */}
+                {analysis.detailed_analysis?.final_assessment && (
+                  <div className="final-assessment">
+                    <div className="assessment-header">
+                      <span className="assessment-location">{analysis.detailed_analysis.final_assessment.most_probable_location}</span>
+                      <span className="assessment-certainty">{analysis.detailed_analysis.final_assessment.certainty_percentage}% Certainty</span>
+                    </div>
+                    {analysis.detailed_analysis.final_assessment.primary_landmark && (
+                      <div className="assessment-landmark">
+                        <strong>Primary Landmark:</strong> {analysis.detailed_analysis.final_assessment.primary_landmark}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
+
+              {/* Verification Suggestions */}
+              {analysis.detailed_analysis?.final_assessment?.verification_suggestions && analysis.detailed_analysis.final_assessment.verification_suggestions.length > 0 && (
+                <div className="verification-section">
+                  <h4>Verification Steps</h4>
+                  <ul className="verification-list">
+                    {analysis.detailed_analysis.final_assessment.verification_suggestions.map((suggestion, idx) => (
+                      <li key={idx}>{suggestion}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* OSINT Notes */}
+              {analysis.detailed_analysis?.final_assessment?.osint_notes && (
+                <div className="osint-notes-section">
+                  <h4>OSINT Notes</h4>
+                  <div className="osint-notes-content">{analysis.detailed_analysis.final_assessment.osint_notes}</div>
+                </div>
+              )}
             </div>
           )}
         </div>

@@ -241,31 +241,105 @@ def analyze_image():
 
     try:
         is_multi = len(images) > 1
-        base_prompt = """You are an elite OSINT Geospatial Forensic Analyst. Identify the location of the image(s) with precision.
-CRITICAL:
-1. ACCURACY: Do not guess. If unsure, give region.
-2. NAVIGABLE: Prefer street view accessible locations.
-3. VERIFICATION: Justify coordinates."""
+        
+        base_prompt = """You are an elite OSINT Geospatial Forensic Analyst specializing in image-based location intelligence. Your mission is to identify the precise location of the image(s) using rigorous investigative methodology.
+
+## CORE DIRECTIVES:
+1. **PRECISION**: Provide coordinates accurate to at least 4 decimal places when confident
+2. **EVIDENCE-BASED**: Every conclusion must be supported by observable evidence from the image
+3. **MULTI-HYPOTHESIS**: Always consider at least 2-3 alternative locations before settling on primary
+4. **TRANSPARENCY**: Explain your methodology and reasoning in detail
+
+## ANALYSIS METHODOLOGY:
+Conduct a systematic sweep of the image examining:
+
+### TIER 1 - HIGH VALUE INDICATORS (If visible, these can pinpoint location):
+- Text/signage in any language (translate if needed)
+- License plates, vehicle types
+- Business names, logos, brands
+- Street names, route numbers
+- Landmarks, monuments, distinctive buildings
+
+### TIER 2 - REGIONAL INDICATORS:
+- Road markings style (line colors, patterns, shoulder markings)
+- Utility infrastructure (pole types, power line configurations)
+- Traffic signs shape and color schemes
+- Architectural style (construction materials, roof types, window styles)
+- Vegetation biome (tropical, temperate, arid, etc.)
+
+### TIER 3 - ENVIRONMENTAL CONTEXT:
+- Sun position/shadows (time estimation)
+- Weather/climate indicators
+- Terrain/topography
+- Soil color and type
+- Flora species identification
+
+### TIER 4 - CULTURAL/SOCIAL MARKERS:
+- Clothing styles visible on people
+- Writing direction (LTR/RTL)
+- Religious symbols or buildings
+- Advertising style and language
+- Vehicle driving side (left/right)"""
 
         specific_instructions = """
-CONTEXT + DETAIL MODE:
-Synthesize context from wide shots and micro-evidence from close-ups. Triangulate location.""" if is_multi else """
-ANALYSIS PROTOCOL:
-Analyze signs, infrastructure, environment, and architecture."""
+
+## MULTI-IMAGE ANALYSIS MODE:
+You have multiple images to analyze. Use cross-referencing:
+- Look for connecting elements between images
+- Use wide shots for context, close-ups for details
+- Triangulate location using multiple evidence points
+- Note any contradicting evidence and explain""" if is_multi else """
+
+## SINGLE IMAGE DEEP ANALYSIS:
+Maximize extraction from this single image:
+- Zoom into all corners and edges mentally
+- Identify any reflections in windows/surfaces
+- Note shadows for directional information
+- Analyze compression artifacts that might reveal origin"""
 
         json_format = """
-Output JSON ONLY:
+
+## OUTPUT FORMAT (JSON ONLY):
 {
-  "country": "Country",
-  "region_or_city": "City/Region",
-  "coordinates": "Lat, Lng",
+  "country": "Full country name",
+  "region_or_city": "Most specific region/city identifiable",
+  "coordinates": "Lat, Lng (to 4 decimal places)",
   "confidence": "High/Medium/Low",
-  "reasoning": "Explanation",
+  "reasoning": "Comprehensive 3-5 sentence explanation of your primary conclusion",
   "detailed_analysis": {
-    "primary_coordinates": { "lat": 0.0, "lng": 0.0 },
-    "alternative_locations": [{ "lat": 0.0, "lng": 0.0, "description": "Alt 1", "probability": "Med" }],
-    "evidence": { "signage": "...", "infrastructure": "...", "architecture": "...", "environment": "...", "cultural_elements": "..." },
-    "final_assessment": { "most_probable_location": "...", "certainty_percentage": 0, "primary_landmark": "..." }
+    "primary_coordinates": { 
+      "lat": 0.0000, 
+      "lng": 0.0000 
+    },
+    "alternative_locations": [
+      { 
+        "lat": 0.0000, 
+        "lng": 0.0000, 
+        "location_name": "City/Region, Country",
+        "description": "Why this could be the location", 
+        "probability": "percentage as integer (e.g., 25)"
+      }
+    ],
+    "evidence": { 
+      "signage": "All visible text, signs, writing - include translations",
+      "infrastructure": "Road type, utility poles, bridges, barriers, road markings details",
+      "architecture": "Building styles, materials, roof types, construction patterns",
+      "environment": "Vegetation, terrain, climate indicators, soil, water bodies",
+      "cultural_elements": "People, vehicles, religious elements, advertising style",
+      "vehicles": "Types, brands, license plate format if visible, driving side"
+    },
+    "methodology": {
+      "key_indicators": ["List the 3-5 most important clues that led to your conclusion"],
+      "eliminated_regions": ["Regions you considered but ruled out and why"],
+      "limiting_factors": ["What prevented higher confidence - image quality, generic scene, etc."]
+    },
+    "final_assessment": { 
+      "most_probable_location": "Full address or most specific location description",
+      "certainty_percentage": 0,
+      "primary_landmark": "Nearest identifiable landmark for verification",
+      "verification_suggestions": ["How someone could verify this location - e.g., check Street View at X, look for Y building"],
+      "osint_notes": "Any additional investigative notes or next steps for deeper analysis"
+    }
   }
 }"""
         

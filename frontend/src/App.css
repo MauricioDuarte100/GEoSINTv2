@@ -37,7 +37,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: 
+  background:
     radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
     radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
     radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
@@ -65,7 +65,8 @@ body {
   margin: 0 auto;
   padding: 2rem;
   display: flex;
-  justify-content: space-between; /* Changed to space-between for history button */
+  justify-content: space-between;
+  /* Changed to space-between for history button */
   align-items: center;
 }
 
@@ -75,7 +76,8 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  flex: 1; /* Center the brand */
+  flex: 1;
+  /* Center the brand */
 }
 
 .header-actions {
@@ -665,6 +667,7 @@ body {
     opacity: 0;
     transform: translateX(100%);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -1041,6 +1044,7 @@ body {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -1214,6 +1218,315 @@ body {
   line-height: 1.8;
 }
 
+/* Evidence Section */
+.evidence-section {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--glass-border);
+}
+
+.evidence-section h4 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+}
+
+.evidence-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.evidence-item {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  transition: all 0.2s ease;
+}
+
+.evidence-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+}
+
+.evidence-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(102, 126, 234, 0.1);
+  border-radius: 0.75rem;
+}
+
+.evidence-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.evidence-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.evidence-value {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Methodology Section */
+.methodology-section {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--glass-border);
+}
+
+.methodology-section h4 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+}
+
+.methodology-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.methodology-item {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+.methodology-item.key-indicators {
+  border-left: 3px solid #4facfe;
+}
+
+.methodology-item.eliminated {
+  border-left: 3px solid #f5576c;
+}
+
+.methodology-item.limiting {
+  border-left: 3px solid #ffd93d;
+}
+
+.methodology-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.methodology-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.methodology-list li {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  padding-left: 1.25rem;
+  position: relative;
+}
+
+.methodology-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.5em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+.key-indicators .methodology-list li::before {
+  background: #4facfe;
+}
+
+.eliminated .methodology-list li::before {
+  background: #f5576c;
+}
+
+.limiting .methodology-list li::before {
+  background: #ffd93d;
+}
+
+/* Final Assessment */
+.final-assessment {
+  margin-top: 1.5rem;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+.assessment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.assessment-location {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.assessment-certainty {
+  background: var(--primary-gradient);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.assessment-landmark {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+.assessment-landmark strong {
+  color: var(--text-primary);
+}
+
+/* Verification Section */
+.verification-section {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--glass-border);
+}
+
+.verification-section h4 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+}
+
+.verification-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.verification-list li {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  position: relative;
+  padding-left: 3rem;
+}
+
+.verification-list li::before {
+  content: '✓';
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  background: rgba(79, 172, 254, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4facfe;
+  font-size: 0.8rem;
+}
+
+/* OSINT Notes Section */
+.osint-notes-section {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--glass-border);
+}
+
+.osint-notes-section h4 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.osint-notes-content {
+  background: rgba(255, 193, 7, 0.05);
+  border: 1px solid rgba(255, 193, 7, 0.2);
+  border-left: 3px solid #ffc107;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+/* Alternative Location Enhancements */
+.alt-location-item {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.5rem;
+}
+
+.alt-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  align-items: center;
+}
+
+.alt-probability {
+  background: rgba(79, 172, 254, 0.2);
+  color: #4facfe;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.alt-description {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
 /* Footer */
 .footer {
   padding: 2rem;
@@ -1239,34 +1552,47 @@ body {
     transform: none;
     margin-top: 1rem;
   }
-  
+
   .hero-title h2 {
     font-size: 2.5rem;
   }
-  
+
   .results-header {
     flex-direction: column;
     gap: 1.5rem;
     text-align: center;
   }
-  
+
   .confidence-badge {
     align-items: center;
   }
-  
+
   .map-header {
     flex-direction: column;
     gap: 1rem;
   }
-  
+
   .map-actions {
     width: 100%;
     justify-content: center;
     flex-wrap: wrap;
   }
-  
+
   .history-sidebar {
     width: 100%;
     right: -100%;
+  }
+
+  .evidence-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .methodology-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .assessment-header {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
